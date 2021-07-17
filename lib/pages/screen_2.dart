@@ -23,7 +23,7 @@ class _EventGuestState extends State<EventGuest> {
     final namaEvent =
         await SecureStorage().readSecureData('eventNama') ?? 'Pilih event';
     final namaGuest =
-        await SecureStorage().readSecureData('guestNama') ?? 'Pilih event';
+        await SecureStorage().readSecureData('guestNama') ?? 'Pilih guest';
     final guestBirthdate =
         await SecureStorage().readSecureData('guestBirthdate') ?? '0000-00-00';
     var sub = guestBirthdate.substring(8);
