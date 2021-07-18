@@ -13,10 +13,33 @@ class _FirstScreenState extends State<FirstScreen> {
   TextEditingController _formNama = TextEditingController();
   final secureStorage = SecureStorage();
   String _namaLengkap;
+  String palindrome;
 
   void initState() {
     super.initState();
     _formNama.text = 'masukkan nama';
+  }
+
+  void validasiPalindrome() {
+    var nama = this._namaLengkap.replaceAll(" ", "");
+    var result = "is palindrome";
+    var i = 0;
+    var j = nama.length - 1;
+    while (i < j) {
+      var charI = nama[i];
+      var charJ = nama[j];
+      print("while loop $i. charI = $charI , charJ = $charJ");
+      if (charI != charJ) {
+        result = "is not palindrome";
+        break;
+      }
+      i++;
+      j--;
+    }
+    setState(() {
+      print("hasil: $result");
+      this.palindrome = result;
+    });
   }
 
   @override
@@ -77,22 +100,54 @@ class _FirstScreenState extends State<FirstScreen> {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: ElevatedButton(
-                onPressed: () async {
-                  if (!_formKey.currentState.validate()) {
-                    return;
-                  }
-                  await secureStorage.writeSecureData(
-                      'namaLengkap', _namaLengkap);
-                  print('masuk siniii 3');
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return EventGuest();
-                  }));
-                },
-                child: Text('Submit'),
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      if (!_formKey.currentState.validate()) {
+                        return;
+                      }
+                      await secureStorage.writeSecureData(
+                          'namaLengkap', _namaLengkap);
+                      print('masuk siniii 3');
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return EventGuest();
+                      }));
+                    },
+                    child: Text('Submit'),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.fromLTRB(16, 0, 0, 0),
+                  child: TextButton(
+                    onPressed: () {
+                      validasiPalindrome();
+                      print("berhasil validasi palindrome");
+                      return showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Check palindrome'),
+                            content:
+                                Text('Your name $_namaLengkap $palindrome'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, 'OK'),
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                    child: const Text('isPalindrome'),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
