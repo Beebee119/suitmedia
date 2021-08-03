@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:suitmedia/pages/screen_3.dart';
@@ -16,6 +18,8 @@ class _EventGuestState extends State<EventGuest> {
   String namaGuest = "Pilih guest";
   int guestBirthdate = 0;
   String message = "";
+  String primeNumber = "is";
+  int guestMontBirthdate = 0;
 
   Future init() async {
     final userName =
@@ -28,7 +32,6 @@ class _EventGuestState extends State<EventGuest> {
         await SecureStorage().readSecureData('guestBirthdate') ?? '0000-00-00';
     var sub = guestBirthdate.substring(8);
     var tanggal = int.parse(sub);
-    print("tanggal adalahhhhhhhhhhhhhhhhhhhh : $tanggal");
     var message;
     if (tanggal % 2 == 0 && tanggal % 3 == 0) {
       message = "iOS";
@@ -39,17 +42,39 @@ class _EventGuestState extends State<EventGuest> {
     } else {
       message = "Feature phone";
     }
+    var sub2 = guestBirthdate.substring(5, 7);
+    var bulan = int.parse(sub2);
+    var primeNumber = "is";
+    print("bulan adalaahhh $bulan");
+    if (bulan == 1) {
+      primeNumber = "is not";
+    } else {
+      for (var i = 2; i <= sqrt(bulan); i++) {
+        if (bulan % i == 0) {
+          print("Bulan nya bukan prime numbers");
+          primeNumber = "is not";
+          break;
+        }
+      }
+    }
+
     setState(() {
       this.namaLengkap = userName;
       this.namaEvent = namaEvent;
       this.namaGuest = namaGuest;
       this.guestBirthdate = tanggal;
       this.message = message;
+      this.guestMontBirthdate = bulan;
+      this.primeNumber = primeNumber;
     });
     if (this.guestBirthdate != 0) {
       print("masukk show dialog");
       _showAlert(context);
     }
+  }
+
+  Widget checkPalindrome() {
+    var nama = this.namaLengkap;
   }
 
   void _showAlert(BuildContext context) {
@@ -63,6 +88,8 @@ class _EventGuestState extends State<EventGuest> {
             children: <Widget>[
               Text('Guest birthdate $guestBirthdate'),
               Text(message),
+              Text(
+                  'Bulan lahir : $guestMontBirthdate, $primeNumber a prime number'),
             ],
           ),
         ),
